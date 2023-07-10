@@ -1,28 +1,23 @@
-// 1. Initialize a new project with: npm init -y, and create an 4 js files .env file 
-// 2. npm i "@pinecone-database/pinecone@^0.0.10" dotenv@^16.0.3 langchain@^0.0.73
-// 3. Obtain API key from OpenAI (https://platform.openai.com/account/api-keys)
-// 4. Obtain API key from Pinecone (https://app.pinecone.io/)
-// 5. Enter API keys in .env file
-// Optional: if you want to use other file loaders (https://js.langchain.com/docs/modules/indexes/document_loaders/examples/file_loaders/)
+
 import { PineconeClient } from "@pinecone-database/pinecone";
 import { DirectoryLoader } from "langchain/document_loaders/fs/directory";
 import { TextLoader } from "langchain/document_loaders/fs/text";
 import { PDFLoader } from "langchain/document_loaders/fs/pdf";
 import * as dotenv from "dotenv";
 import { createPineconeIndex } from "./1-createPineconeIndex.js";
-import { updatePinecone } from "./2-updatePinecone.js";
-import { queryPineconeVectorStoreAndQueryLLM } from "./3-queryPineconeAndQueryGPT.js";
-// 6. Load environment variables
+import { updatePinecone , updatePineconeWithDataFromWebPages} from "./2-updatePinecone.js";
+import { queryPineconeVectorStoreAndQueryLLM, queryPineconeVectorStoreAndQueryLLMForWebSites } from "./3-queryPineconeAndQueryGPT.js";
+
 dotenv.config();
-// 7. Set up DirectoryLoader to load documents from the ./documents directory
+
 const loader = new DirectoryLoader("./documents", {
     ".txt": (path) => new TextLoader(path),
     ".pdf": (path) => new PDFLoader(path),
 });
 const docs = await loader.load();
 // 8. Set up variables for the filename, question, and index settings
-const question = "Who is mr Gatsby?";
-const indexName = "your-pinecone-index-name";
+const question = "what is the testimonial of Praveen dayal?";
+const indexName = "sensai";
 const vectorDimension = 1536;
 // 9. Initialize Pinecone client with API key and environment
 const client = new PineconeClient();
@@ -36,6 +31,8 @@ await client.init({
   await createPineconeIndex(client, indexName, vectorDimension);
 // 12. Update Pinecone vector store with document embeddings
   // await updatePinecone(client, indexName, docs);
+  await updatePineconeWithDataFromWebPages(client, indexName);
 // 13. Query Pinecone vector store and GPT model for an answer
-  await queryPineconeVectorStoreAndQueryLLM(client, indexName, question);
+  // await queryPineconeVectorStoreAndQueryLLM(client, indexName, question);
+  await queryPineconeVectorStoreAndQueryLLMForWebSites(client, indexName, question);
 })();

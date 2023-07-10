@@ -13,7 +13,9 @@
     "@pinecone-database/pinecone": "^0.0.10",
     "dotenv": "^16.0.3",
     "langchain": "^0.0.73",
-    "pdf-parse": "^1.1.1"
+    "pdf-parse": "^1.1.1",
+    "puppeteer": "^19.11.1",
+    "turndown": "^7.1.2"
   },
   "engines": {
     "npm": ">=8.0.0 <10.0.0",
